@@ -47,6 +47,13 @@ private:
 	//switch perspectives function
 	void Switch();
 
+	//shoot function
+	void Shoot();
+
+	//creating bullet sub class 
+	UPROPERTY(EditAnywhere, Category = "Shooting")
+	TSubclassOf<class ABullet> BulletClass;
+
 	//bool to store if the perspective is first person
 	UPROPERTY()
 		bool firstPerson;

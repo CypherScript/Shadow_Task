@@ -2,6 +2,7 @@
 
 
 #include "PlayerCharacter.h"
+#include "Bullet.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -90,6 +91,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	//to bind the action input to the switch function when button pressed
 	InputComponent->BindAction("ChangeCamera", IE_Pressed, this, &APlayerCharacter::Switch);
+
+	//to bind shoot action to shoot function when button is pressed
+	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::Shoot);
 }
 
 //check jump function definition
@@ -146,6 +150,30 @@ void APlayerCharacter::Switch()
 
 		//set bool value to true
 		firstPerson = true;
+	}
+}
+
+//shoot function definition
+void APlayerCharacter::Shoot()
+{
+	//check if bullet class is not null
+	if (BulletClass)
+	{
+		//creating and setting the bullet spawn parameters for the spawn actor function
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;	//handles collision
+		SpawnParams.bNoFail = true;	//it has to spawn; spawn can not fail
+		SpawnParams.Owner = this;	//layer character is the owner
+		SpawnParams.Instigator = this;	//actor that is responsible for the damage that is dealt by the thing that is spawning
+
+		//creating and setting the bullet transform parameter for the spawn actor function
+		FTransform BulletSpawnTransform; 
+		BulletSpawnTransform.SetLocation(GetActorForwardVector() * 500.f + GetActorLocation());	//spawn the bullet in front of the player
+		BulletSpawnTransform.SetRotation(GetActorRotation().Quaternion());	//whatever rotation the player has, give it to the bullet
+		BulletSpawnTransform.SetScale3D(FVector(1.f));	//set the scale of the bullet
+
+		//get the bullet actor; shooting is basically just spawning the actor with projectile movement
+		GetWorld()->SpawnActor<ABullet>(BulletClass, BulletSpawnTransform, SpawnParams);
 	}
 }
 
