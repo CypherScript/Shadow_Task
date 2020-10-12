@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Character.h"
+#include "TimerManager.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -50,9 +51,15 @@ private:
 	//shoot function
 	void Shoot();
 
+	//resets the ability to jump
+	void ResetJump();
+
 	//creating bullet sub class 
 	UPROPERTY(EditAnywhere, Category = "Shooting")
 	TSubclassOf<class ABullet> BulletClass;
+
+	//handles delay between jumps
+	FTimerHandle JumpDelayTimerHandle;
 
 	//bool to store if the perspective is first person
 	UPROPERTY()
@@ -61,6 +68,10 @@ private:
 	//bool to store player jump
 	UPROPERTY()
 		bool jumping;
+
+	//bool to store jumpTimer
+	UPROPERTY()
+		bool jumpTimer;
 
 	//camera component
 	UPROPERTY()

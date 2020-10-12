@@ -2,6 +2,7 @@
 
 
 #include "PlayerCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Bullet.h"
 
 // Sets default values
@@ -46,6 +47,15 @@ APlayerCharacter::APlayerCharacter()
 
 	//default first person to false; game starts at 3rd person
 	firstPerson = false;
+
+	//tiimer is full because player can jump at first
+	jumpTimer = true;
+
+	//adjust the z jump velocity
+	GetCharacterMovement()->JumpZVelocity = 1000.f;
+
+	//adjust the movement speed
+	GetCharacterMovement()->MaxWalkSpeed = 1000.f;
 }
 
 // Called when the game starts or when spawned
@@ -61,10 +71,29 @@ void APlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//check if jump bool is true
-	if (jumping)
+	if (jumping) // && jumpTimer)
 	{
+		//jumpTimer = false;
+
 		//the engine's jump function
 		Jump();
+
+		//make character fall faster, by applying modifier to gravity scale, for less floaty jump
+		if (GetMovementComponent()->IsFalling())
+		{
+			GetCharacterMovement()->GravityScale = 2.5f;
+
+			//set bool to false so that player does not jump continuously even if key is held down
+			jumping = false;
+		}
+		
+		//reset gravity scale fi player is not falling
+		if (!GetMovementComponent()->IsFalling())
+		{
+			GetCharacterMovement()->GravityScale = 1.f;
+		}
+
+		//GetWorld()->GetTimerManager().SetTimer(JumpDelayTimerHandle, this, &APlayerCharacter::ResetJump, 0.25f, false);
 	}
 
 }
@@ -87,7 +116,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	//to bind the action input to the check jump function when button pressed, and button released
 	InputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::CheckJump);
-	InputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::CheckJump);
+	//InputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::CheckJump);
 
 	//to bind the action input to the switch function when button pressed
 	InputComponent->BindAction("ChangeCamera", IE_Pressed, this, &APlayerCharacter::Switch);
@@ -168,13 +197,21 @@ void APlayerCharacter::Shoot()
 
 		//creating and setting the bullet transform parameter for the spawn actor function
 		FTransform BulletSpawnTransform; 
-		BulletSpawnTransform.SetLocation(GetActorForwardVector() * 500.f + GetActorLocation());	//spawn the bullet in front of the player
+		BulletSpawnTransform.SetLocation(GetActorForwardVector() * 250.f + GetActorLocation());	//spawn the bullet in front of the player
 		BulletSpawnTransform.SetRotation(GetActorRotation().Quaternion());	//whatever rotation the player has, give it to the bullet
 		BulletSpawnTransform.SetScale3D(FVector(1.f));	//set the scale of the bullet
 
 		//get the bullet actor; shooting is basically just spawning the actor with projectile movement
 		GetWorld()->SpawnActor<ABullet>(BulletClass, BulletSpawnTransform, SpawnParams);
 	}
+}
+
+//reset jump function definition
+void APlayerCharacter::ResetJump()
+{
+	jumpTimer = true;
+
+	GetWorldTimerManager().ClearTimer(JumpDelayTimerHandle);
 }
 
 //vertical rotation function definition

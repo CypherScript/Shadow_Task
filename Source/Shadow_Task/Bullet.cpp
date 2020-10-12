@@ -19,6 +19,8 @@ ABullet::ABullet()
 	BulletMovement->InitialSpeed = 2000.f;
 	BulletMovement->MaxSpeed = 2000.f;
 
+	//wrapping (with the on actor hit delegate and add dynamic macro) the on bullet hit method
+	OnActorHit.AddDynamic(this, &ABullet::OnBulletHit);
 }
 
 // Called when the game starts or when spawned
@@ -33,5 +35,12 @@ void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+//on bullet hit fuunction definition
+void ABullet::OnBulletHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	//destroy the bullet when it hits something
+	Destroy();
 }
 

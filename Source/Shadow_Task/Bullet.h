@@ -30,5 +30,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
+	//on bullet hit function for when the bullet hits something, it gets destroyed
+	UFUNCTION()
+	void OnBulletHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
 };
