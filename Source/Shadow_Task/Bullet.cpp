@@ -2,6 +2,7 @@
 
 
 #include "Bullet.h"
+#include "Target.h"
 #include "GameFRamework/ProjectileMovementComponent.h"
 
 // Sets default values
@@ -40,7 +41,14 @@ void ABullet::Tick(float DeltaTime)
 //on bullet hit fuunction definition
 void ABullet::OnBulletHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	//destroy the bullet when it hits something
+	//check if bullet hits target
+	if (ATarget* Target = Cast<ATarget>(OtherActor))
+	{
+		//destroy the target
+		Target->Destroy();
+	}
+	
+	//destroy the bullet
 	Destroy();
 }
 

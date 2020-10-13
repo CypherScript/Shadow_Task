@@ -74,7 +74,7 @@ private:
 		bool jumpTimer;
 
 	//camera component
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Camera")
 		UCameraComponent* Camera;
 
 	//spring arm component (for 3rd person view)

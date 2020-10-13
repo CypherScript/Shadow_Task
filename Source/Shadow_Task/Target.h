@@ -15,12 +15,20 @@ public:
 	// Sets default values for this actor's properties
 	ATarget();
 
+	//mesh component for target
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UStaticMeshComponent* TargetMesh;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//determies the direction in which the target moves
+	FVector MoveDirection;
+
+	//scalar to multiply movement of target
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float MoveScale;
 
 public:	
 	// Called every frame

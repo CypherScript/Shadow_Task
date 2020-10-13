@@ -26,7 +26,7 @@ APlayerCharacter::APlayerCharacter()
 	Arm->AttachTo(RootComponent);
 
 	//the arm's radius around the player and it's rotation
-	Arm->TargetArmLength = 300.f;
+	Arm->TargetArmLength = 500.f;
 	Arm->SetRelativeRotation(FRotator (-45.f, 0.f, 0.f));
 
 	//camera lag
@@ -207,12 +207,12 @@ void APlayerCharacter::Shoot()
 }
 
 //reset jump function definition
-void APlayerCharacter::ResetJump()
+/*void APlayerCharacter::ResetJump()
 {
 	jumpTimer = true;
 
 	GetWorldTimerManager().ClearTimer(JumpDelayTimerHandle);
-}
+}*/
 
 //vertical rotation function definition
 void APlayerCharacter::VerticalRotation(float value)
